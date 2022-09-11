@@ -1,4 +1,5 @@
 import csv
+import logging
 from dataclasses import dataclass, fields
 
 #
@@ -17,32 +18,33 @@ from dataclasses import dataclass, fields
 
 
 class CsvList:
-    def __init__(self):
-        self.__rows = []
-        self.__duplicates = set()
-        self.__errors = {}
-        self.__csv_loaded = False
+    @classmethod
+    def from_csv_file(cls, filename):
+        with open(filename, newline='\n') as csvfile:
+            reader = csv.DictReader(csvfile)
+            return cls(reader)
 
-    def get_csv(self):
-        return self.__rows
+    def __init__(self, entry_iterator):
+        self.__entries = {}
+        for index, row in enumerate(entry_iterator):
+            # Parsing raw data
+            row = {k.strip(): v.strip() for k, v in row.items()}
+            try:
+                p = RowParser(row['id'], row['name'], row['surname'], row['birth-year'],
+                              row['country'], row['yearly-amount'], row['monthly-variation'],
+                              row['currency'])
+                if p.id not in self.__entries:
+                    self.__entries[p.id] = p
+                else:
+                    raise InvalidRowException('ID must be unique number, found a duplicate!')
+            except InvalidRowException as e:
+                logging.error(f' Found an error at row {index}: {e}')
 
-    def get_duplicates_set(self):
-        return self.__duplicates
+    def __iter__(self):
+        return iter(self.__entries.values())
 
-    def get_errors_dict(self):
-        return self.__errors
-
-    def set_csv_status(self, status):
-        self.__csv_loaded = status
-
-    def get_csv_status(self):
-        return self.__csv_loaded
-
-    def clean(self):
-        self.__rows = []
-        self.get_duplicates_set().clear()
-        self.get_errors_dict().clear()
-        self.__csv_loaded = False
+    def __getitem__(self, item):
+        return self.__entries[item]
 
 
 @dataclass
@@ -55,15 +57,6 @@ class RowParser:
     yearly_amount: int
     monthly_variation: int
     currency: str
-    index: int
-    csv_list: CsvList  # Pointer to main struct holding all the csv
-
-    def check_for_dups_and_neg(self):
-        dup = self.csv_list.get_duplicates_set()
-        if self.id not in dup:
-            dup.add(self.id)
-        else:
-            self.csv_list.get_errors_dict()[self.index] = 'ID must be unique number, found a duplicate!'
 
     def constraints_check(self, value_with_err):
         try:
@@ -71,11 +64,8 @@ class RowParser:
                 case 'id':
                     # Types not mathing! Try to convert to int
                     self.id = int(self.id)
-                    if self.id > 0:
-                        # Convert not raising ValueError -> Check for duplicate and negativity
-                        self.check_for_dups_and_neg()
-                    else:
-                        self.csv_list.get_errors_dict()[self.index] = "ID can't be a negative number!"
+                    if self.id <= 0:
+                        raise InvalidRowException("ID can't be a negative number!")
                 case 'yearly_amount':
                     self.yearly_amount = int(self.yearly_amount)
 
@@ -91,7 +81,7 @@ class RowParser:
             elif value_with_err == 'monthly_variation':
                 self.monthly_variation = 0
             else:
-                self.csv_list.get_errors_dict()[self.index] = value_with_err+' is invalid!'
+                raise InvalidRowException(value_with_err+' is invalid!')
 
     # Post_Init needed to validate correct type. Is called right after __init__ method of this dataclass
     def __post_init__(self):
@@ -102,16 +92,8 @@ class RowParser:
                 # f.name == field
                 self.constraints_check(f.name)
             elif self.name == '' and self.surname == '':
-                self.csv_list.get_errors_dict()[self.index] = 'One between name and surname must be non-empty!'
+                raise InvalidRowException('One between name and surname must be non-empty!')
 
 
-def read(c_list, filename):
-    with open(filename, newline='\n') as csvfile:
-        reader = csv.DictReader(csvfile)
-        for index, row in enumerate(reader):
-            # Parsing raw data
-            row = {k.strip(): v.strip() for k, v in row.items()}
-            p = RowParser(row['id'], row['name'], row['surname'], row['birth-year'],
-                          row['country'], row['yearly-amount'], row['monthly-variation'],
-                          row['currency'], index, c_list)
-            c_list.get_csv().append(p)
+class InvalidRowException(BaseException):
+    pass
