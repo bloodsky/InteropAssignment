@@ -5,7 +5,7 @@ id ,name ,surname ,birth-year ,country ,yearly-amount ,monthly-variation ,curren
 10004 ,Martin ,Odersky , 1958 ,Germany ,903456 , ,EUR
 10005 ,Anakin ,Skywalker , 1990 ,Tatooine ,23 ,+26 ,ITL
 10005 ,Darth ,Vader , 1990 ,Coruscant ,652121 ,-311 ,ITL
-10006 , , , 1975 ,United States ,1750 , ,USD
+10006 ,Karen , , 1975 ,United States ,1750 , ,USD
 10007 ,Luigi ,Mario , 1981 ,Japan ,1109 ,+10 ,
  ,Jimmy ,Ridimmi , 1931 ,Faroe Islands ,20 ,-44 ,GBP
 10009 ,Ciccio ,Pernacchi , 1945 ,Switzerland , ,+328 ,

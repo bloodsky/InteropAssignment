@@ -7,3 +7,5 @@ After cloning the repository just cd inside project directory and
 ```bash
   python3 main.py
 ```
+
+input-test-files/input_file_test1.csv
