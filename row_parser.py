@@ -18,13 +18,9 @@ from typing import Optional
 class RecordCollection:
     @classmethod
     def from_csv_file(cls, filename):
-        try:
-            with open(filename, newline='\n') as csvfile:
-                reader = csv.DictReader(csvfile)
-                return cls(reader)
-        except FileNotFoundError as e:
-            logging.error(f' File not found {e}')
-            return None
+        with open(filename, newline='\n') as csvfile:
+            reader = csv.DictReader(csvfile)
+            return cls(reader)
 
     def __init__(self, entry_iterator):
         self.__entries = {}
@@ -115,3 +111,10 @@ def eur_yearly_amount(amount, currency):
         return amount / 1936.27
     elif currency == 'GBP':
         return amount * 1.18
+    else:
+        raise UnknownExchangeRateException("Unknown currency found!")
+
+
+class UnknownExchangeRateException(BaseException):
+    pass
+

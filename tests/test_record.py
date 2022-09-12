@@ -1,6 +1,7 @@
 import unittest
 
-from row_parser import Record, InvalidRecordException, RecordCollection
+from row_parser import Record, InvalidRecordException, \
+    UnknownExchangeRateException, eur_yearly_amount
 
 
 class TestRecordIDs(unittest.TestCase):
@@ -23,38 +24,43 @@ class TestRecordIDs(unittest.TestCase):
         self.assertRaises(InvalidRecordException, Record, '1', '', '', '1234', 'test', '456', '+56', 'EUR')
 
     def test_only_name(self):
-        raised = False
-        try:
-            r = Record(1, 'roberto', '', 1234, 'test', 456, +56, 'EUR')
-        except InvalidRecordException:
-            raised = True
-        self.assertFalse(raised, 'Exception raised')
+        r = Record(1, 'roberto', '', 1234, 'test', 456, +56, 'EUR')
         self.assertEqual(r.name, 'roberto')
         self.assertEqual(r.surname, '')
 
     def test_only_surname(self):
-        raised = False
-        try:
-            r = Record(1, '', 'qwerty', 1234, 'test', 456, +56, 'EUR')
-        except InvalidRecordException:
-            raised = True
-        self.assertFalse(raised, 'Exception raised')
+        r = Record(1, '', 'qwerty', 1234, 'test', 456, +56, 'EUR')
         self.assertEqual(r.name, '')
         self.assertEqual(r.surname, 'qwerty')
 
-    def test_yearly_amount(self):
+    def test_yearly_amount_must_be_integer(self):
         self.assertRaises(InvalidRecordException, Record, '1', 'test', '', '1234', 'test', '4ert', '+56', 'EUR')
+
+    def test_yearly_amount_empty(self):
         r = Record(1, 'roberto', '', 1234, 'test', '', +56, 'EUR')
         self.assertEqual(r.yearly_amount, 0)
 
-    def test_monthly_variation(self):
+    def test_yearly_amount(self):
+        r = Record(1, 'roberto', '', 1234, 'test', 345, +56, 'EUR')
+        self.assertEqual(r.yearly_amount, 345)
+
+    def test_monthly_variation_must_be_integer(self):
         self.assertRaises(InvalidRecordException, Record, '1', 'test', '', '1234', 'test', '-234', '+ciao56', 'EUR')
+
+    def test_monthly_variation_empty(self):
         r = Record(1, 'roberto', '', 1234, 'test', 456, '', 'EUR')
         self.assertEqual(r.monthly_variation, 0)
 
-    def test_currency(self):
+    def test_monthly_variation(self):
+        r = Record(1, 'roberto', '', 1234, 'test', 456, -123, 'EUR')
+        self.assertEqual(r.monthly_variation, -123)
+
+    def test_currency_empty(self):
         r = Record(1, 'roberto', '', 1234, 'test', 456, -67, '')
         self.assertEqual(r.currency, 'EUR')
+
+    def test_unknown_currency(self):
+        self.assertRaises(UnknownExchangeRateException, eur_yearly_amount, 456, 'YEN')
 
 
 if __name__ == '__main__':

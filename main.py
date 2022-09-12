@@ -33,19 +33,22 @@ def display_prompt():  # OK
 if __name__ == "__main__":
     while True:
         display_prompt()
-        (assignment_number, filename1, filename2) = get_user_input()
-        match assignment_number:
-            case 1:
-                assignments.assignment1(filename1)
-            case 2:
-                assignments.assignment2(filename1)
-            case 3:
-                assignments.assignment3(filename1)
-            case 4:
-                assignments.assignment4(filename1)
-            case 5:
-                assignments.assignment5(filename1)
-            case 6:
-                assignments.assignment6(filename1, filename2)
-            case _:
-                exit()
+        try:
+            (assignment_number, filename1, filename2) = get_user_input()
+            match assignment_number:
+                case 1:
+                    assignments.assignment1(filename1)
+                case 2:
+                    assignments.assignment2(filename1)
+                case 3:
+                    assignments.assignment3(filename1)
+                case 4:
+                    assignments.assignment4(filename1)
+                case 5:
+                    assignments.assignment5(filename1)
+                case 6:
+                    assignments.assignment6(filename1, filename2)
+                case _:
+                    exit()
+        except Exception as e:
+            logging.error(f"Something went wrong: {e}")
