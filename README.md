@@ -30,6 +30,6 @@ for monthly variation and currency (empty mean EUR).
 ## Input tests folder
 
 The test files to perform the assignments are located in the folder: ```input-test-files``` <br />
-The two files referred to as ```input_file_test1.csv``` ```input_file_test2.csv``` <br />
-are example files with errors, as reported by the specification.<br /> 
+The two files referred to as ```input_file_test1.csv``` ```input_file_test2.csv``` <br /> are example files<br />
+with errors, as reported by the specification.<br /> 
 ```clean_input_test.csv``` is a clean file, meaning that is an error-free csv file.<br />
