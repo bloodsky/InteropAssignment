@@ -16,7 +16,7 @@ After cloning the repository just cd inside project directory and<br />
 To run tests suite just cd inside main project directory (not tests directory) and<br /> 
 
 ```bash
-    python3 -m unittest discover
+  python3 -m unittest discover
 ```
 
 ## Handling of missing values
@@ -29,11 +29,7 @@ for monthly variation and currency (empty mean EUR).
 
 ## Input tests folder
 
-The test files to perform the assignments are located in the folder:<br />
-```input-test-files``` <br />
-The two files referred to as<br /> 
-```input_file_test1.csv```<br /> 
-```input_file_test2.csv``` <br />
+The test files to perform the assignments are located in the folder: ```input-test-files``` <br />
+The two files referred to as ```input_file_test1.csv``` ```input_file_test2.csv``` <br />
 are example files with errors, as reported by the specification.<br /> 
-```clean_input_test.csv```<br /> 
-is the clean file meaning that is an error-free csv file.<br />
+```clean_input_test.csv``` is a clean file, meaning that is an error-free csv file.<br />
