@@ -1,3 +1,4 @@
+import logging
 import unittest
 
 from row_parser import Record, InvalidRecordException, \
