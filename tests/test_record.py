@@ -1,7 +1,7 @@
 import logging
 import unittest
 
-from row_parser import Record, InvalidRecordException, \
+from record_parser import Record, InvalidRecordException, \
     UnknownExchangeRateException, eur_yearly_amount
 
 

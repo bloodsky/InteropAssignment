@@ -1,7 +1,7 @@
 import logging
 import unittest
 
-from row_parser import RecordCollection
+from record_parser import RecordCollection
 
 
 class TestRecordCollection(unittest.TestCase):

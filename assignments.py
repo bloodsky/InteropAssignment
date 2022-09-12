@@ -1,5 +1,5 @@
 from collections import Counter
-from row_parser import RecordCollection, eur_yearly_amount
+from record_parser import RecordCollection, eur_yearly_amount
 
 
 def assignment1(filename):

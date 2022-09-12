@@ -5,15 +5,21 @@ import logging
 def get_user_input():
     user_input = input('Enter your selection : ')
     try:
-        res = int(user_input.split(' ')[0])
-        filename1 = user_input.split(' ')[1]
-        try:
-            filename2 = user_input.split(' ')[2]
-        except IndexError:
-            filename2 = None
-        return res, filename1, filename2
+        input_list = user_input.split(' ')
+        if len(input_list) == 1:
+            return int(input_list[0]), None, None
+        elif len(input_list) == 2:
+            return int(user_input.split(' ')[0]), user_input.split(' ')[1], None
+        elif len(input_list) == 3:
+            return int(user_input.split(' ')[0]), user_input.split(' ')[1], user_input.split(' ')[2]
+        else:
+            raise TooManyArgumentsException('Max number of parameters is 3!')
     except ValueError as e:
         logging.error(f' The input you provided is not valid: {e}.\nPlease try again!')
+
+
+class TooManyArgumentsException(BaseException):
+    pass
 
 
 def display_prompt():  # OK
@@ -27,7 +33,7 @@ def display_prompt():  # OK
           "specified CSV file;\n"
           "'6 <CSV filename> <CSV filename>' to tell for each person in both files if is richer or poorer and the "
           "money delta from the specified CSV file;\n"
-          "'7' to exit program\n")
+          "'7 exit' to exit program\n")
 
 
 if __name__ == "__main__":
@@ -48,7 +54,7 @@ if __name__ == "__main__":
                     assignments.assignment5(filename1)
                 case 6:
                     assignments.assignment6(filename1, filename2)
-                case _:
+                case 7:
                     exit()
         except Exception as e:
             logging.error(f"Something went wrong: {e}")
